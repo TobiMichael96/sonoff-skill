@@ -9,20 +9,18 @@ class SonoffToggle(MycroftSkill):
         MycroftSkill.__init__(self)
 
     def initialize(self):
-        self.__build_single_command()
+        toggle_intent = IntentBuilder("mymqttIntent").require("CommandKeyword").require("ModuleKeyword").optionally("ActionKeyword").build()
+        self.register_intent(toggle_intent, self.handle_toggle_sonoff)
 
-    def __build_single_command(self):
-        intent = IntentBuilder("mymqttIntent").require("CommandKeyword").require("ModuleKeyword").build()
-        self.register_intent(intent, self.handle_toggle_sonoff)
 
     def handle_toggle_sonoff(self, message):
         dev_name = message.data.get("ModuleKeyword").replace(' ', '_')
-        act_name = message.data.get("ActionKeyword")
-        if message.data.get("CommandKeyword") == "toggle":
+        if  message.data.get("ActionKeyword"):
+                act_name = message.data.get("ActionKeyword")
+        else:
                 act_name = "toggle"
 
         publish.single("cmnd/" + dev_name + "/power", act_name, hostname="127.0.0.1")
-
         self.speak_dialog('toggle.sonoff')
 
 
