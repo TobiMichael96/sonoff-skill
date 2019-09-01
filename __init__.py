@@ -18,7 +18,7 @@ class SonoffToggle(MycroftSkill):
                 act_name = message.data.get("ActionKeyword")
         else:
                 act_name = "toggle"
-        publish.single("cmnd/" + dev_name + "/power", act_name, hostname="127.0.0.1")
+        publish.single(dev_name + "/cmnd/power", act_name, hostname="127.0.0.1")
         self.speak_dialog('toggle.sonoff')
 
 def create_skill():
